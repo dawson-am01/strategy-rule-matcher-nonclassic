@@ -3,10 +3,10 @@ import pandas as pd
 import json
 
 # --- Set page settings ---
-st.set_page_config(page_title="Strategy Rule Matcher", page_icon="🎯")
+st.set_page_config(page_title="Strategy Rule Matcher – Nonclassic", page_icon="🧩")
 
-st.title("🎯 Strategy Rule Matcher")
-st.markdown("Match your query context against rules, with dropdown and slider-based inputs.")
+st.title("🧩 Strategy Rule Matcher (Nonclassic)")
+st.markdown("Match your context against custom rules for basketball player/team incidents.")
 
 st.header("🔧 Query Context")
 
@@ -14,14 +14,14 @@ st.header("🔧 Query Context")
 entity_options = {
     "Brand": ["Brand 1", "Brand 2"],
     "Sport": ["Basketball", "American Football"],
-    "Competition": ["NBA", "NFL", "La Liga", "EPL"],
+    "Competition": ["NBA", "EuroLeague"],
     "Incident": ["Points", "Assists", "Made Threes", "Rebounds", "Steals", "Blocks"],
     "Player or Team": ["S Curry", "J Brown", "Miami Heat", "Detroit Pistons"],
     "TimeBased": ["Live", "Pre Live", "30", "150", "360", "480", "600", "1440", "2880", "4320", "8640", "Q1", "Q2", "Q3", "Q4", "H1", "H2", "Match"],
     "Cohort": ["Cohort A", "Cohort B"]
 }
 
-# --- Default selections ---
+# --- Default context (all present) ---
 default_query_context = {
     "Brand": "Brand 1",
     "Sport": "Basketball",
@@ -32,17 +32,13 @@ default_query_context = {
     "Cohort": "Cohort A"
 }
 
-# --- Query Context Dropdowns ---
+# --- Dropdowns for context ---
 query_context = {}
 for entity, options in entity_options.items():
-    selection = st.selectbox(
-        f"{entity}:",
-        options,
-        index=options.index(default_query_context.get(entity, options[0]))
-    )
+    selection = st.selectbox(f"{entity}:", options, index=options.index(default_query_context[entity]))
     query_context[entity] = selection
 
-# --- Entity Weightings with Sliders ---
+# --- Entity weightings ---
 st.header("⚖️ Entity Weightings")
 
 default_weights = {
@@ -50,37 +46,36 @@ default_weights = {
     "Sport": 1,
     "Competition": 5,
     "Incident": 7,
-    "Player or Team": "10",
+    "Player or Team": 10,
     "TimeBased": 15,
     "Cohort": 30
 }
 
 entity_weights = {}
 for entity in entity_options.keys():
-    weight = st.slider(
-        f"Weight for {entity}",
-        min_value=0,
-        max_value=50,
-        value=default_weights.get(entity, 1)
-    )
+    weight = st.slider(f"Weight for {entity}", 0, 30, value=default_weights[entity])
     entity_weights[entity] = weight
 
-# --- Rules (latest from user) ---
+# --- Default Rules (5 examples) ---
 default_rules = pd.DataFrame({
     "Permutation": [
-        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points",
-        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points, Player or Team:S Curry",
-        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points, TimeBased:Match"
+        "Brand:Brand 1, Sport:Basketball, Player or Team:J Brown, TimeBased:600, Incident:Steals",
+        "Brand:Brand 1, Sport:Basketball, Cohort:Cohort B, Player or Team:Detroit Pistons, TimeBased:360",
+        "Brand:Brand 1, Sport:Basketball, TimeBased:4320, Player or Team:Miami Heat, Incident:Blocks",
+        "Brand:Brand 1, Sport:Basketball, Cohort:Cohort A, TimeBased:Live, Player or Team:S Curry, Incident:Rebounds",
+        "Brand:Brand 1, Sport:Basketball, TimeBased:Q3, Player or Team:J Brown, Incident:Points"
     ],
     "Strategy": [
-        "strategy_001",
-        "strategy_002",
-        "strategy_003",
+        "strategy_nonclassic_001",
+        "strategy_nonclassic_002",
+        "strategy_nonclassic_003",
+        "strategy_nonclassic_004",
+        "strategy_nonclassic_005"
     ]
 })
 
-# --- Rule Editor ---
-st.subheader("📋 Define Your Rules")
+# --- Editable Rule Table ---
+st.subheader("📋 Rule Editor")
 rules_data = st.data_editor(
     default_rules,
     use_container_width=True,
@@ -88,7 +83,7 @@ rules_data = st.data_editor(
     height=450
 )
 
-# --- Run Matching ---
+# --- Matching Engine ---
 if st.button("▶️ Run Matching"):
     try:
         def extract_entity_value(entry):
@@ -98,7 +93,6 @@ if st.button("▶️ Run Matching"):
         def compute_score(permutation):
             return sum(entity_weights.get(entity, 0) for entity, _ in map(extract_entity_value, permutation))
 
-        # Match only if each entity:value in the rule matches the query context exactly
         def matches_query(permutation):
             for entity, value in map(extract_entity_value, permutation):
                 if query_context.get(entity) != value:
@@ -138,9 +132,8 @@ if st.button("▶️ Run Matching"):
             })
 
         matched_rules = sorted(matched_rules, key=lambda x: x["Score"], reverse=True)
-
-        st.success(f"✅ Found {len(matched_rules)} matching rule(s).")
+        st.success(f"✅ {len(matched_rules)} rule(s) matched your query.")
         st.dataframe(matched_rules, use_container_width=True)
 
     except Exception as e:
-        st.error(f"⚠️ An error occurred: {e}")
+        st.error(f"⚠️ Error occurred: {e}")
