@@ -27,7 +27,7 @@ default_query_context = {
     "Sport": "Basketball",
     "Competition": "NBA",
     "Incident": "Points",
-    "Player or Team": "S Curry"
+    "Player or Team": "S Curry",
     "TimeBased": "150",
     "Cohort": "Cohort A"
 }
@@ -50,7 +50,7 @@ default_weights = {
     "Sport": 1,
     "Competition": 5,
     "Incident": 7,
-    "Player or Team": "10"
+    "Player or Team": "10",
     "TimeBased": 15,
     "Cohort": 30
 }
@@ -69,8 +69,8 @@ for entity in entity_options.keys():
 default_rules = pd.DataFrame({
     "Permutation": [
         "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points",
-        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points", "Player or Team:S Curry"
-        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points","TimeBased:Match"
+        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points, Player or Team:S Curry",
+        "Brand:Brand 1, Sport:Basketball, Competition:NBA, Incident:Points, TimeBased:Match"
     ],
     "Strategy": [
         "strategy_001",
