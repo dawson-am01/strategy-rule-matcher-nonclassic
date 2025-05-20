@@ -15,8 +15,6 @@ entity_options = {
     "Brand": ["Brand 1", "Brand 2"],
     "Sport": ["Basketball", "Football", "American Football"],
     "Competition": ["NBA", "NFL", "La Liga", "EPL"],
-    "Grade": ["A", "C", "AA", "AMF_NFL"],
-    "Market": ["Market 3", "First GS", "WDW", "Win-Draw-Win", "Anytime TDS"],
     "TimeBased": ["Live", "Pre Live", "30", "150", "360", "480", "600", "1440", "2880", "4320", "8640"],
     "Cohort": ["Cohort A", "Cohort B"]
 }
@@ -26,8 +24,6 @@ default_query_context = {
     "Brand": "Brand 1",
     "Sport": "Football",
     "Competition": "EPL",
-    "Grade": "AA",
-    "Market": "WDW",
     "TimeBased": "150",
     "Cohort": "Cohort A"
 }
@@ -49,8 +45,6 @@ default_weights = {
     "Brand": 1,
     "Sport": 1,
     "Competition": 5,
-    "Grade": 3,
-    "Market": 7,
     "TimeBased": 15,
     "Cohort": 30
 }
