@@ -13,7 +13,7 @@ st.header("🔧 Query Context")
 # --- Predefined options for each entity ---
 entity_options = {
     "Brand": ["Brand 1", "Brand 2"],
-    "Sport": ["Basketball", "Football", "American Football"],
+    "Sport": ["Basketball", "American Football"],
     "Competition": ["NBA", "NFL", "La Liga", "EPL"],
     "Incident": ["Points", "Assists", "Made Threes", "Rebounds", "Steals", "Blocks"],
     "Player or Team": ["S Curry", "J Brown", "Miami Heat", "Detroit Pistons"],
